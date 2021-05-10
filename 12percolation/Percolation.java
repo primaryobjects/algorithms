@@ -35,12 +35,12 @@ public class Percolation {
 
     private class Point
     {
-        public int col, row;
+        public int row, col;
 
-        public Point(int _col, int _row)
+        public Point(int _row, int _col)
         {
-            col = _col;
             row = _row;
+            col = _col;
         }
     }
 
@@ -184,7 +184,7 @@ public class Percolation {
                 {
                     for (int i=0; i<_solution.length; i++)
                     {
-                        if (_solution[i].col == row+1 && _solution[i].row == col+1)
+                        if (_solution[i].row == row+1 && _solution[i].col == col+1)
                         {
                             color = Color.GREEN;
                             break;
@@ -201,7 +201,7 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        int width = 8;        
+        int width = 40;        
         Percolation percolation = new Percolation(width);
 
         // Generate a random grid of open/close cells.
@@ -215,8 +215,6 @@ public class Percolation {
                 }
             }
         }
-        percolation.draw();
-        System.console().readLine();
 
         /*percolation.open(1, 1);
         percolation.open(2, 1);
@@ -235,10 +233,21 @@ public class Percolation {
         percolation.open(6, 7);
         percolation.open(6, 8);*/
 
+        percolation.draw();
+        
         // Calculate a flow path from top to bottom.
         boolean solution = percolation.percolates();
         System.out.println(solution);
-        percolation.draw();
+        if (solution)
+        {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            percolation.draw();
+        }
     }
 
 }
