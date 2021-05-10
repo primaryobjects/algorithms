@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile java",
+            "type": "shell", 
+            "command": "${workspaceFolder}/lib/jdk-15.0.2+7/bin/javac -classpath ${workspaceFolder}/lib/*.jar ${workspaceFolder}/**/*.java",
+            "group": "build"
+        }
+    ]
+}
