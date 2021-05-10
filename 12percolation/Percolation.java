@@ -5,10 +5,21 @@ public class Percolation {
     private State[][] _arr;
     private int _openCount = 0;
     private WeightedQuickUnionUF _quickUnion;
-    
+
     public enum State {
         OPEN,
         FULL
+    }
+
+    private class Point
+    {
+        public int x, y;
+
+        public Point(int _x, int _y)
+        {
+            x = _x;
+            y = _y;
+        }
     }
 
     // creates n-by-n grid, with all sites initially blocked
@@ -58,7 +69,7 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
 
-        return _arr[row-1][col-1] == State.FULL;
+        return _arr[row-1][col-1] == State.FULL || _arr[row-1][col-1] == null;
     }
 
     // returns the number of open sites
@@ -67,10 +78,52 @@ public class Percolation {
         return _openCount;
     }
 
+    private String flow(int row, int col, String path, int history[][])
+    {
+        if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length || history[row-1][col-1] == 1)
+        {
+            // Invalid row or col or already visited.
+            return "";
+        }
+        else if (isOpen(row, col))
+        {
+            // The current cell is open, include in the path, and continue on.
+            path += "(" + row + "," + col + ")";
+
+            if (col == _arr.length)
+            {
+                // We've reached the bottom with an open space, we're done!
+                path += "*";
+                return path;
+            }
+            else
+            {
+                history[row-1][col-1] = 1;
+
+                String temp;
+
+                // Try to flow left, right, up, down.
+                temp = flow(row, col - 1, path, history);
+                if (temp.endsWith("*")) return temp;
+                temp = flow(row, col + 1, path, history);
+                if (temp.endsWith("*")) return temp;
+                temp = flow(row - 1, col, path, history);
+                if (temp.endsWith("*")) return temp;
+                temp = flow(row + 1, col, path, history);
+                if (temp.endsWith("*")) return temp;
+            }
+        }
+
+        return "";
+    }
+
     // does the system percolate?
     public boolean percolates()
     {
-        return false;
+        // Using depth-first search, we will check for a path from any cell in the top row to the bottom row.
+        String path = flow(1, 1, "", new int[_arr.length][_arr[0].length]);
+        System.out.println(path);
+        return path.endsWith("*");
     }
 
     public void draw()
@@ -101,11 +154,21 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        Percolation percolation = new Percolation(4);
+        Percolation percolation = new Percolation(5);
         percolation.open(1, 1);
-        percolation.open(1, 2);
+        percolation.open(2, 1);
+        percolation.open(3, 1);
+        percolation.open(3, 2);
+        percolation.open(3, 3);
         percolation.open(2, 3);
+        percolation.open(1, 3);
+        percolation.open(1, 4);
+        percolation.open(4, 3);
         percolation.open(4, 4);
+        percolation.open(4, 5);
         percolation.draw();
+
+        boolean result = percolation.percolates();
+        System.out.println(result);
     }
 }
