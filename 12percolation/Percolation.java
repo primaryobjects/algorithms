@@ -1,9 +1,13 @@
+import java.awt.Color;
+
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private State[][] _arr;
     private int _openCount = 0;
+    private Point[] _solution;
     private WeightedQuickUnionUF _quickUnion;
 
     public enum State {
@@ -11,14 +15,32 @@ public class Percolation {
         FULL
     }
 
+    private Point[] append(int n, Point arr[], Point p)
+    { 
+        int i;
+ 
+        Point newArray[] = new Point[n + 1];
+        
+        //copy original array into new array
+        for (i = 0; i < n; i++)
+        {
+            newArray[i] = arr[i];
+        }
+ 
+        //add element to the new array
+        newArray[n] = p;
+ 
+        return newArray; 
+    }
+
     private class Point
     {
-        public int x, y;
+        public int col, row;
 
-        public Point(int _x, int _y)
+        public Point(int _col, int _row)
         {
-            x = _x;
-            y = _y;
+            col = _col;
+            row = _row;
         }
     }
 
@@ -78,52 +100,65 @@ public class Percolation {
         return _openCount;
     }
 
-    private String flow(int row, int col, String path, int history[][])
+    private Point[] flow(int row, int col, Point[] path, int history[][])
     {
         if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length || history[row-1][col-1] == 1)
         {
             // Invalid row or col or already visited.
-            return "";
+            return null;
         }
         else if (isOpen(row, col))
         {
             // The current cell is open, include in the path, and continue on.
-            path += "(" + row + "," + col + ")";
+            path = append(path.length, path, new Point(row, col));
 
             if (col == _arr.length)
             {
                 // We've reached the bottom with an open space, we're done!
-                path += "*";
                 return path;
             }
             else
             {
                 history[row-1][col-1] = 1;
 
-                String temp;
+                Point[] temp;
 
                 // Try to flow left, right, up, down.
                 temp = flow(row, col - 1, path, history);
-                if (temp.endsWith("*")) return temp;
+                if (temp != null) return temp;
                 temp = flow(row, col + 1, path, history);
-                if (temp.endsWith("*")) return temp;
+                if (temp != null) return temp;
                 temp = flow(row - 1, col, path, history);
-                if (temp.endsWith("*")) return temp;
+                if (temp != null) return temp;
                 temp = flow(row + 1, col, path, history);
-                if (temp.endsWith("*")) return temp;
+                if (temp != null) return temp;
             }
         }
 
-        return "";
+        return null;
     }
 
     // does the system percolate?
     public boolean percolates()
     {
         // Using depth-first search, we will check for a path from any cell in the top row to the bottom row.
-        String path = flow(1, 1, "", new int[_arr.length][_arr[0].length]);
-        System.out.println(path);
-        return path.endsWith("*");
+        for (int col=1; col<=_arr[0].length; col++)
+        {
+            Point[] path = flow(col, 1, new Point[]{}, new int[_arr.length][_arr[0].length]);
+            if (path != null)
+            {
+                // Print solution.
+                for (int i=0; i<path.length; i++)
+                {
+                    System.out.println("(" + path[i].col + "," + path[i].row + ")");
+                }
+
+                _solution = path;
+                break;
+            }
+        }
+
+        return _solution != null;
     }
 
     public void draw()
@@ -138,14 +173,26 @@ public class Percolation {
         {
             for (int col=0; col<width; col++)
             {
+                Color color = StdDraw.BLACK;
+
                 if (isOpen(row+1, col+1))
                 {
-                    StdDraw.setPenColor(StdDraw.LIGHT_GRAY);
-                }
-                else {
-                    StdDraw.setPenColor(StdDraw.BLACK);
+                    color = Color.LIGHT_GRAY;
                 }
 
+                if (_solution != null)
+                {
+                    for (int i=0; i<_solution.length; i++)
+                    {
+                        if (_solution[i].col == row+1 && _solution[i].row == col+1)
+                        {
+                            color = Color.GREEN;
+                            break;
+                        }
+                    }
+                }
+
+                StdDraw.setPenColor(color);
                 StdDraw.filledSquare(row + 0.5, height - col, 0.45);
             }
         }
@@ -154,8 +201,24 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        Percolation percolation = new Percolation(5);
-        percolation.open(1, 1);
+        int width = 8;        
+        Percolation percolation = new Percolation(width);
+
+        // Generate a random grid of open/close cells.
+        for (int row=1; row<=width; row++)
+        {
+            for (int col=1; col<=width; col++)
+            {
+                if (StdRandom.bernoulli(0.6))
+                {
+                    percolation.open(row, col);
+                }
+            }
+        }
+        percolation.draw();
+        System.console().readLine();
+
+        /*percolation.open(1, 1);
         percolation.open(2, 1);
         percolation.open(3, 1);
         percolation.open(3, 2);
@@ -166,9 +229,16 @@ public class Percolation {
         percolation.open(4, 3);
         percolation.open(4, 4);
         percolation.open(4, 5);
-        percolation.draw();
+        percolation.open(4, 6);
+        percolation.open(4, 7);
+        percolation.open(5, 7);
+        percolation.open(6, 7);
+        percolation.open(6, 8);*/
 
-        boolean result = percolation.percolates();
-        System.out.println(result);
+        // Calculate a flow path from top to bottom.
+        boolean solution = percolation.percolates();
+        System.out.println(solution);
+        percolation.draw();
     }
+
 }
