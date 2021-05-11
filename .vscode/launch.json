@@ -49,6 +49,17 @@
         },
         {
             "type": "java",
+            "name": "Launch PercolationDPS",
+            "request": "launch",
+            "mainClass": "PercolationDPS",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "12percolation"
+            ]
+        },
+        {
+            "type": "java",
             "name": "Launch Percolation",
             "request": "launch",
             "mainClass": "Percolation",

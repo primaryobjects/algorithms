@@ -7,40 +7,26 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private State[][] _arr;
     private int _openCount = 0;
-    private Point[] _solution;
-    private WeightedQuickUnionUF _quickUnion;
+    private int _topID = 0;
+    private int _bottomID = 0;
+    private WeightedQuickUnionUF _uf;
 
-    public enum State {
+    private enum State {
         OPEN,
         FULL
     }
 
-    private Point[] append(int n, Point arr[], Point p)
-    { 
-        int i;
- 
-        Point newArray[] = new Point[n + 1];
-        
-        //copy original array into new array
-        for (i = 0; i < n; i++)
-        {
-            newArray[i] = arr[i];
-        }
- 
-        //add element to the new array
-        newArray[n] = p;
- 
-        return newArray; 
-    }
-
-    private class Point
+    private int toID(int row, int col)
     {
-        public int row, col;
-
-        public Point(int _row, int _col)
+        // Converts a 2D x,y coordinate into a 1D index value.
+        if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length)
         {
-            row = _row;
-            col = _col;
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            // Offset by 1 since row and col are 1 to n.
+            return (_arr.length * (row - 1)) + (col - 1);
         }
     }
 
@@ -53,8 +39,10 @@ public class Percolation {
         }
 
         _arr = new State[n][n];
-        _openCount = n*n;
-        _quickUnion = new WeightedQuickUnionUF(_openCount + 2);
+        _topID = n*n; // Use the next to last slot in the array as the virtual top cluster.
+        _bottomID = _topID + 1; // Use the last slot in the array as the virtual bottom cluster.
+        
+        _uf = new WeightedQuickUnionUF(n*n + 2); // +1 for a virtual top and +1 for a virtual bottom cluster.
     }
 
     // opens the site (row, col) if it is not open already
@@ -65,10 +53,45 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
         
-        if (_arr[row-1][col-1] != State.OPEN)
+        if (!isOpen(row, col))
         {
             _arr[row-1][col-1] = State.OPEN;
             _openCount++;
+
+            // Convert 2D to 1D coordinate for UF array.
+            int p = toID(row, col);
+
+            // Union with adjacent open cells, top, right, bottom, left.
+            if (row-1 > 0 && isOpen(row-1, col))
+            {
+                int q = toID(row-1, col);
+                _uf.union(p, q);
+            }
+            if (row+1 <= _arr.length && isOpen(row+1, col))
+            {
+                int q = toID(row+1, col);
+                _uf.union(p, q);
+            }
+            if (col-1 > 0 && isOpen(row, col-1))
+            {
+                int q = toID(row, col-1);
+                _uf.union(p, q);
+            }
+            if (col+1 <= _arr[0].length && isOpen(row, col+1))
+            {
+                int q = toID(row, col+1);
+                _uf.union(p, q);
+            }
+
+            // If this is the top or bottom row, connect with the virtual top or bottom cluster.
+            if (row == 1)
+            {
+                _uf.union(p, _topID);
+            }
+            else if (row == _arr.length)
+            {
+                _uf.union(p, _bottomID);
+            }
         }
     }
 
@@ -100,65 +123,10 @@ public class Percolation {
         return _openCount;
     }
 
-    private Point[] flow(int row, int col, Point[] path, int history[][])
-    {
-        if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length || history[row-1][col-1] == 1)
-        {
-            // Invalid row or col or already visited.
-            return null;
-        }
-        else if (isOpen(row, col))
-        {
-            // The current cell is open, include in the path, and continue on.
-            path = append(path.length, path, new Point(row, col));
-
-            if (col == _arr.length)
-            {
-                // We've reached the bottom with an open space, we're done!
-                return path;
-            }
-            else
-            {
-                history[row-1][col-1] = 1;
-
-                Point[] temp;
-
-                // Try to flow left, right, up, down.
-                temp = flow(row, col - 1, path, history);
-                if (temp != null) return temp;
-                temp = flow(row, col + 1, path, history);
-                if (temp != null) return temp;
-                temp = flow(row - 1, col, path, history);
-                if (temp != null) return temp;
-                temp = flow(row + 1, col, path, history);
-                if (temp != null) return temp;
-            }
-        }
-
-        return null;
-    }
-
     // does the system percolate?
     public boolean percolates()
     {
-        // Using depth-first search, we will check for a path from any cell in the top row to the bottom row.
-        for (int col=1; col<=_arr[0].length; col++)
-        {
-            Point[] path = flow(col, 1, new Point[]{}, new int[_arr.length][_arr[0].length]);
-            if (path != null)
-            {
-                // Print solution.
-                for (int i=0; i<path.length; i++)
-                {
-                    System.out.println("(" + path[i].col + "," + path[i].row + ")");
-                }
-
-                _solution = path;
-                break;
-            }
-        }
-
-        return _solution != null;
+        return _uf.find(_topID) == _uf.find(_bottomID);
     }
 
     public void draw()
@@ -175,21 +143,9 @@ public class Percolation {
             {
                 Color color = StdDraw.BLACK;
 
-                if (isOpen(row+1, col+1))
+                if (isOpen(col+1, row+1))
                 {
                     color = Color.LIGHT_GRAY;
-                }
-
-                if (_solution != null)
-                {
-                    for (int i=0; i<_solution.length; i++)
-                    {
-                        if (_solution[i].row == row+1 && _solution[i].col == col+1)
-                        {
-                            color = Color.GREEN;
-                            break;
-                        }
-                    }
                 }
 
                 StdDraw.setPenColor(color);
@@ -201,7 +157,7 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        int width = 40;        
+        int width = 5;        
         Percolation percolation = new Percolation(width);
 
         // Generate a random grid of open/close cells.
@@ -209,45 +165,15 @@ public class Percolation {
         {
             for (int col=1; col<=width; col++)
             {
-                if (StdRandom.bernoulli(0.6))
+                if (StdRandom.bernoulli(0.5))
                 {
                     percolation.open(row, col);
                 }
             }
         }
 
-        /*percolation.open(1, 1);
-        percolation.open(2, 1);
-        percolation.open(3, 1);
-        percolation.open(3, 2);
-        percolation.open(3, 3);
-        percolation.open(2, 3);
-        percolation.open(1, 3);
-        percolation.open(1, 4);
-        percolation.open(4, 3);
-        percolation.open(4, 4);
-        percolation.open(4, 5);
-        percolation.open(4, 6);
-        percolation.open(4, 7);
-        percolation.open(5, 7);
-        percolation.open(6, 7);
-        percolation.open(6, 8);*/
-
         percolation.draw();
-        
-        // Calculate a flow path from top to bottom.
-        boolean solution = percolation.percolates();
-        System.out.println(solution);
-        if (solution)
-        {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            percolation.draw();
-        }
+        System.out.println(percolation.percolates());
     }
 
 }
