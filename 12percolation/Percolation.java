@@ -157,7 +157,7 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args)
     {
-        int width = 5;        
+        int width = 40;
         Percolation percolation = new Percolation(width);
 
         // Generate a random grid of open/close cells.
@@ -165,7 +165,7 @@ public class Percolation {
         {
             for (int col=1; col<=width; col++)
             {
-                if (StdRandom.bernoulli(0.5))
+                if (StdRandom.bernoulli(0.6))
                 {
                     percolation.open(row, col);
                 }

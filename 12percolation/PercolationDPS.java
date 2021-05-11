@@ -198,8 +198,8 @@ public class PercolationDPS {
     // test client (optional)
     public static void main(String[] args)
     {
-        int width = 40;        
-        Percolation percolation = new Percolation(width);
+        int width = 5;        
+        PercolationDPS percolation = new PercolationDPS(width);
 
         // Generate a random grid of open/close cells.
         for (int row=1; row<=width; row++)
