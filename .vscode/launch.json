@@ -68,6 +68,18 @@
                 "lib/algs4.jar",
                 "12percolation"
             ]
+        },
+        {
+            "type": "java",
+            "name": "Launch PercolationStats",
+            "request": "launch",
+            "mainClass": "PercolationStats",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "12percolation"
+            ],
+            "args": ["200", "100"]
         }
     ]
 }
