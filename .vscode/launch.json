@@ -79,7 +79,7 @@
                 "lib/algs4.jar",
                 "12percolation"
             ],
-            "args": ["200", "100"]
+            "args": ["10", "10"]
         }
     ]
 }

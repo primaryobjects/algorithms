@@ -1,19 +1,34 @@
-import java.awt.Color;
+//import java.awt.Color;
 
-import edu.princeton.cs.algs4.StdDraw;
+//import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private State[][] _arr;
     private int _openCount = 0;
-    private int _topID = 0;
-    private int _bottomID = 0;
-    private WeightedQuickUnionUF _uf;
+    private final int _topID;
+    private final int _bottomID;
+    private final WeightedQuickUnionUF _uf;
 
     private enum State {
         OPEN,
         FULL
+    }
+
+    // creates n-by-n grid, with all sites initially blocked
+    public Percolation(int n)
+    {
+        if (n < 1)
+        {
+            throw new IllegalArgumentException();
+        }
+
+        _arr = new State[n][n];
+        _topID = n*n; // Use the next to last slot in the array as the virtual top cluster.
+        _bottomID = _topID + 1; // Use the last slot in the array as the virtual bottom cluster.
+        
+        _uf = new WeightedQuickUnionUF(n*n + 2); // +1 for a virtual top and +1 for a virtual bottom cluster.
     }
 
     private int toID(int row, int col)
@@ -28,21 +43,6 @@ public class Percolation {
             // Offset by 1 since row and col are 1 to n.
             return (_arr.length * (row - 1)) + (col - 1);
         }
-    }
-
-    // creates n-by-n grid, with all sites initially blocked
-    public Percolation(int n)
-    {
-        if (n < 0)
-        {
-            throw new IllegalArgumentException();
-        }
-
-        _arr = new State[n][n];
-        _topID = n*n; // Use the next to last slot in the array as the virtual top cluster.
-        _bottomID = _topID + 1; // Use the last slot in the array as the virtual bottom cluster.
-        
-        _uf = new WeightedQuickUnionUF(n*n + 2); // +1 for a virtual top and +1 for a virtual bottom cluster.
     }
 
     // opens the site (row, col) if it is not open already
@@ -88,7 +88,8 @@ public class Percolation {
             {
                 _uf.union(p, _topID);
             }
-            else if (row == _arr.length)
+
+            if (row == _arr.length)
             {
                 _uf.union(p, _bottomID);
             }
@@ -98,7 +99,7 @@ public class Percolation {
     // is the site (row, col) open?
     public boolean isOpen(int row, int col)
     {
-        if (row < 1 || col < 1)
+        if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length)
         {
             throw new IllegalArgumentException();
         }
@@ -109,12 +110,12 @@ public class Percolation {
     // is the site (row, col) full?
     public boolean isFull(int row, int col)
     {
-        if (row < 1 || col < 1)
+        if (row < 1 || col < 1 || row > _arr.length || col > _arr[0].length)
         {
             throw new IllegalArgumentException();
         }
 
-        return _arr[row-1][col-1] == State.FULL || _arr[row-1][col-1] == null;
+        return _uf.find(toID(row, col)) == _uf.find(_topID);
     }
 
     // returns the number of open sites
@@ -129,17 +130,17 @@ public class Percolation {
         return _uf.find(_topID) == _uf.find(_bottomID);
     }
 
-    public void draw()
+    /*private void draw()
     {
         int width = _arr[0].length;
         int height = _arr.length;
 
-        StdDraw.setXscale(-.05*width, 1.05*width);
-        StdDraw.setYscale(-.05*height, 1.20*height);
+        StdDraw.setXscale(-0.05*width, 1.05*width);
+        StdDraw.setYscale(-0.05*height, 1.20*height);
 
-        for (int row=0; row<height; row++)
+        for (int row = 0; row < height; row++)
         {
-            for (int col=0; col<width; col++)
+            for (int col = 0; col < width; col++)
             {
                 Color color = StdDraw.BLACK;
 
@@ -152,18 +153,18 @@ public class Percolation {
                 StdDraw.filledSquare(row + 0.5, height - col, 0.45);
             }
         }
-    }
+    }*/
 
     // test client (optional)
     public static void main(String[] args)
     {
-        int width = 40;
+        int width = 1;
         Percolation percolation = new Percolation(width);
 
         // Generate a random grid of open/close cells.
-        for (int row=1; row<=width; row++)
+        for (int row = 1; row <= width; row++)
         {
-            for (int col=1; col<=width; col++)
+            for (int col = 1; col <= width; col++)
             {
                 if (StdRandom.bernoulli(0.6))
                 {
@@ -172,7 +173,7 @@ public class Percolation {
             }
         }
 
-        percolation.draw();
+        //percolation.draw();
         System.out.println(percolation.percolates());
     }
 
