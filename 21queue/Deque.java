@@ -87,11 +87,11 @@ public class Deque<Item> implements Iterable<Item>
 
         if (isEmpty())
         {
-            _head = _tail = new Node(item);
+            _head = _tail = new Node<Item>(item);
         }
         else
         {
-            Node<Item> node = new Node(item, _head);
+            Node<Item> node = new Node<Item>(item, _head);
             _head.prev = node;
             _head = node;
         }
@@ -109,11 +109,11 @@ public class Deque<Item> implements Iterable<Item>
 
         if (isEmpty())
         {
-            _head = _tail = new Node(item);
+            _head = _tail = new Node<Item>(item);
         }
         else
         {
-            Node node = new Node(item, null, _tail);
+            Node node = new Node<Item>(item, null, _tail);
             _tail.next = node;
             _tail = _tail.next;
         }
