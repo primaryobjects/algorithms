@@ -12,7 +12,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     // construct an empty randomized queue
     public RandomizedQueue()
     {
-        _items = (Item[])new Object[2];
+        _items = (Item[]) new Object[2];
     }
 
     // #region Private Members
@@ -77,7 +77,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         }
 
         // Copy the array into the new sized array.
-        Item[] arr2 = (Item[])new Object[newSize];
+        Item[] arr2 = (Item[]) new Object[newSize];
         for (int i = 0; i < _count; i++)
         {
             arr2[i] = arr[i];
