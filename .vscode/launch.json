@@ -102,6 +102,18 @@
                 "lib/algs4.jar",
                 "21queue"
             ]
+        },
+        {
+            "type": "java",
+            "name": "Launch Permutation",
+            "request": "launch",
+            "mainClass": "Permutation",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "21queue"
+            ],
+            "args": [3]
         }
     ]
 }

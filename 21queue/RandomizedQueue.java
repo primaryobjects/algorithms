@@ -128,7 +128,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         }
 
         // Choose a random item to remove.
-        int index = StdRandom.uniform(size() + 1);
+        int index = StdRandom.uniform(size());
         Item item = _items[index];
 
         // Replace the selected item with the last item in the array.
@@ -197,5 +197,14 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             StdOut.print(queue.sample());
         }
         StdOut.println();
+
+        queue = new RandomizedQueue<Integer>();
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+        StdOut.println("Size=" + queue.size() + ", " + queue.dequeue());
+        StdOut.println("Size=" + queue.size() + ", " + queue.dequeue());
+        StdOut.println("Size=" + queue.size() + ", " + queue.dequeue());
+        StdOut.println("Size=" + queue.size());
     }
 }
