@@ -18,7 +18,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     // #region Private Members
     private class RandomizedIterator implements Iterator<Item>
     {
-        private Item[] _items;
+        private final Item[] _items;
         private int _index;
 
         public RandomizedIterator(Item[] items, int count)
@@ -80,7 +80,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         Item[] arr2 = (Item[])new Object[newSize];
         for (int i = 0; i < _count; i++)
         {
-            arr2[i] = _items[i];
+            arr2[i] = arr[i];
         }
 
         return arr2;
@@ -179,7 +179,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     {
         RandomizedQueue<Integer> queue;
 
-        for (int i=0; i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             queue = new RandomizedQueue<Integer>();
             queue.enqueue(1);
@@ -192,7 +192,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         queue.enqueue(1);
         queue.enqueue(2);
         queue.enqueue(3);
-        for (int i=0; i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             StdOut.print(queue.sample());
         }

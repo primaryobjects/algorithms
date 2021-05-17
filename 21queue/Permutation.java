@@ -10,20 +10,12 @@ public class Permutation {
         }
 
         int n = Integer.parseInt(args[0]);
-        String[] input = StdIn.readAllStrings();
-
-        if (n > input.length)
-        {
-            throw new IllegalArgumentException("Number of results exceeds length of list.");
-        }
 
         RandomizedQueue<String> queue = new RandomizedQueue<String>();
-        for (String string : input)
+        while (!StdIn.isEmpty())
         {
-            if (string != null)
-            {
-                queue.enqueue(string);
-            }
+            String string = StdIn.readString();
+            queue.enqueue(string);
         }
 
         for (int i = 0; i < n; i++)
