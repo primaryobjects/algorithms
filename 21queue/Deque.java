@@ -138,7 +138,12 @@ public class Deque<Item> implements Iterable<Item>
         
         _count--;
         
-        if (isEmpty())
+        if (!isEmpty())
+        {
+            // Remove reference.
+            _head.prev = null;
+        }
+        else
         {
             _head = null;
             _tail = null;
@@ -162,6 +167,7 @@ public class Deque<Item> implements Iterable<Item>
         
         if (!isEmpty())
         {
+            // Remove reference.
             _tail.next = null;
         }
         else
