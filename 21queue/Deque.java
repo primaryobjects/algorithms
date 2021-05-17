@@ -87,7 +87,9 @@ public class Deque<Item> implements Iterable<Item>
 
         if (isEmpty())
         {
-            _head = _tail = new Node<Item>(item);
+            Node<Item> node = new Node<Item>(item);
+            _head = node;
+            _tail = node;
         }
         else
         {
@@ -109,11 +111,13 @@ public class Deque<Item> implements Iterable<Item>
 
         if (isEmpty())
         {
-            _head = _tail = new Node<Item>(item);
+            Node<Item> node = new Node<Item>(item);
+            _head = node;
+            _tail = node;
         }
         else
         {
-            Node node = new Node<Item>(item, null, _tail);
+            Node<Item> node = new Node<Item>(item, null, _tail);
             _tail.next = node;
             _tail = _tail.next;
         }
@@ -136,7 +140,8 @@ public class Deque<Item> implements Iterable<Item>
         
         if (isEmpty())
         {
-            _head = _tail = null;
+            _head = null;
+            _tail = null;
         }
 
         return node.data;
@@ -161,7 +166,8 @@ public class Deque<Item> implements Iterable<Item>
         }
         else
         {
-            _head = _tail = null;
+            _head = null;
+            _tail = null;
         }
 
         return node.data;
@@ -188,7 +194,7 @@ public class Deque<Item> implements Iterable<Item>
     {        
         Deque<Integer> deque;
         
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(2);
         deque.addLast(3);
         deque.addLast(4);
@@ -197,42 +203,42 @@ public class Deque<Item> implements Iterable<Item>
         deque.removeFirst();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.removeFirst();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.removeLast();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.addFirst(2);
         deque.removeFirst();
         deque.removeLast();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.addFirst(2);
         deque.removeLast();
         deque.removeFirst();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addLast(1);
         deque.addLast(2);
         deque.removeLast();
         deque.removeFirst();
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addLast(1);
         deque.addLast(2);
         deque.removeFirst();
@@ -240,7 +246,7 @@ public class Deque<Item> implements Iterable<Item>
         System.out.println("isEmpty: " + deque.isEmpty());
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addLast(1);
         deque.addLast(2);
         deque.removeFirst();
@@ -251,7 +257,7 @@ public class Deque<Item> implements Iterable<Item>
         System.out.println("Size: " + deque.size());
         deque.print();
 
-        deque = new Deque();
+        deque = new Deque<Integer>();
         deque.addFirst(1);
         deque.addLast(2);
         deque.addLast(3);
