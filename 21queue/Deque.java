@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 public class Deque<Item> implements Iterable<Item>
 {
     private Node<Item> _head, _tail;
-    private int count = 0;
+    private int _count = 0;
 
     // construct an empty deque
     public Deque()
@@ -74,7 +74,7 @@ public class Deque<Item> implements Iterable<Item>
     // return the number of items on the deque
     public int size()
     {
-        return count;
+        return _count;
     }
 
     // add the item to the front
@@ -98,7 +98,7 @@ public class Deque<Item> implements Iterable<Item>
             _head = node;
         }
 
-        count++;
+        _count++;
     }
 
     // add the item to the back
@@ -122,7 +122,7 @@ public class Deque<Item> implements Iterable<Item>
             _tail = _tail.next;
         }
 
-        count++;
+        _count++;
     }
 
     // remove and return the item from the front
@@ -136,7 +136,7 @@ public class Deque<Item> implements Iterable<Item>
         Node<Item> node = _head;
         _head = _head.next;
         
-        count--;
+        _count--;
         
         if (isEmpty())
         {
@@ -158,7 +158,7 @@ public class Deque<Item> implements Iterable<Item>
         Node<Item> node = _tail;
         _tail = _tail.prev;
 
-        count--;
+        _count--;
         
         if (!isEmpty())
         {
