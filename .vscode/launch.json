@@ -80,6 +80,17 @@
                 "12percolation"
             ],
             "args": ["10", "10"]
+        },
+        {
+            "type": "java",
+            "name": "Launch Deque",
+            "request": "launch",
+            "mainClass": "Deque",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "21queue"
+            ]
         }
     ]
 }
