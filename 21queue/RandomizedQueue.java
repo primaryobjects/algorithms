@@ -4,68 +4,91 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
-public class RandomizedQueue<Item> implements Iterable<Item> {
-    private Node<Item> _head;
+public class RandomizedQueue<Item> implements Iterable<Item>
+{
+    private Item[] _items;
     private int _count = 0;
 
     // construct an empty randomized queue
     public RandomizedQueue()
     {
+        _items = (Item[])new Object[2];
     }
 
-    //#region Private classes
-    private class Node<T>
+    // #region Private Members
+    private class RandomizedIterator implements Iterator<Item>
     {
-        public T data;
-        public Node<T> next;
-        public Node<T> prev;
+        private Item[] _items;
+        private int _index;
 
-        public Node(T item)
+        public RandomizedIterator(Item[] items, int count)
         {
-            data = item;
+            // Copy the array of items.
+            _items = (Item[])new Object[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                _items[i] = items[i];
+            }
+
+            // Shuffle the items.
+            StdRandom.shuffle(_items);
         }
 
-        public Node(T item, Node<T> n)
+        public boolean hasNext()
         {
-            this(item);
-            next = n;
+            return _index < _items.length;
         }
 
-        public Node(T item, Node<T> n, Node<T> p)
-        {
-            this(item, n);
-            prev = p;
-        }
-    }
-
-    private class NodeIterator<T> implements Iterator<T>
-    {
-        private Node<T> _current;
-
-        public NodeIterator(Node<T> node)
-        {
-            // Initialize cursor.
-            _current = node;
-        }
-
-        public boolean hasNext() {
-            return _current != null;
-        }
-
-        public T next()
+        public Item next()
         {
             if (!hasNext())
             {
                 throw new NoSuchElementException();
             }
 
-            T data = _current.data;
-            _current = _current.next;
-            
-            return data;
+            return _items[_index++];
+        }
+        
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
         }
     }
-    //#endregion
+
+    private void enlarge()
+    {
+        if (_items.length == _count)
+        {
+            resize(_items.length * 2);
+        }
+    }
+
+    private void shrink()
+    {
+        if (_count > 0 && _items.length / 4 == _count)
+        {
+            resize(_items.length / 2);
+        }
+    }
+
+    private void resize(int capacity)
+    {
+        if (capacity < _count)
+        {
+            throw new IllegalArgumentException();
+        }
+
+        // Copy the array into the new sized array.
+        Item[] temp = (Item[])new Object[capacity];
+        for (int i = 0; i < _count; i++)
+        {
+            temp[i] = _items[i];
+        }
+
+        _items = temp;
+    }
+    // #endregion
 
     // is the randomized queue empty?
     public boolean isEmpty()
@@ -87,54 +110,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new IllegalArgumentException();
         }
 
-        if (isEmpty())
-        {
-            Node<Item> node = new Node<Item>(item);
-            _head = node;
-        }
-        else
-        {
-            // Choose a random index to insert at.
-            int index = StdRandom.uniform(size() + 1);
+        // Auto-enlarge the array, if needed.
+        enlarge();
 
-            // Get a pointer to the head.
-            Node<Item> current = _head;
-            Node<Item> parent = null;
-
-            // Move current to the desired index.
-            for (int i = 0; i < index; i++)
-            {
-                parent = current;
-                current = current.next;
-            }
-
-            // Now that we're in position, insert a new node using the parent and next.
-            Node<Item> node = new Node<Item>(item, current, parent);
-
-            // Store a pointer to the old child. Unless we are inserting the first node, in which case there is no child.
-            Node<Item> temp = null;
-            if (parent != null)
-            {
-                temp = parent.next;
-
-                // Connect the parent to the new node, effectively inserting it into position.
-                parent.next = node;
-            }
-
-            // Connect the old child's previous node to the new node, effectively inserting it into position. Unless we are inserting at the end of the list, in which case there is no old child.
-            if (temp != null)
-            {
-                temp.prev = node;
-            }
-
-            if (index == 0)
-            {
-                // Update the head.
-                _head = node;
-            }
-        }
-
-        _count++;
+        // Add the item to the array.
+        _items[_count++] = item;
     }
 
     // remove and return a random item
@@ -145,30 +125,41 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
 
-        // Return the first element, since we're already in random order.
-        Node<Item> node = _head;
-        _head = _head.next;
-        
-        _count--;
-        
-        if (isEmpty())
-        {
-            _head = null;
-        }
+        // Choose a random item to remove.
+        int index = StdRandom.uniform(size() + 1);
+        Item item = _items[index];
 
-        return node.data;
+        // Replace the selected item with the last item in the array.
+        _items[index] = _items[_count-1];
+        
+        // Trim the last item off.
+        _items[_count-1] = null;
+
+        _count--;
+
+        // Auto-shrink the array, if needed.
+        shrink();
+
+        return item;
     }
 
     // return a random item (but do not remove it)
     public Item sample()
     {
-        return null;
+        if (isEmpty())
+        {
+            throw new NoSuchElementException();
+        }
+
+        // Choose a random item to remove.
+        int index = StdRandom.uniform(size());
+        return _items[index];
     }
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator()
     {
-        return new NodeIterator<Item>(_head);
+        return new RandomizedIterator(_items, _count);
     }
 
     private void print()
@@ -194,5 +185,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             queue.enqueue(3);
             queue.print();
         }
+
+        queue = new RandomizedQueue<Integer>();
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+        for (int i=0; i<10; i++)
+        {
+            StdOut.print(queue.sample());
+        }
+        StdOut.println();
     }
 }
