@@ -91,6 +91,17 @@
                 "lib/algs4.jar",
                 "21queue"
             ]
+        },
+        {
+            "type": "java",
+            "name": "Launch RandomizedQueue",
+            "request": "launch",
+            "mainClass": "RandomizedQueue",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "21queue"
+            ]
         }
     ]
 }
