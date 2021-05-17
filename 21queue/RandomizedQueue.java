@@ -24,12 +24,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         public RandomizedIterator(Item[] items, int count)
         {
             // Copy the array of items.
-            _items = (Item[])new Object[count];
-
-            for (int i = 0; i < count; i++)
-            {
-                _items[i] = items[i];
-            }
+            _items = resize(items, count);
 
             // Shuffle the items.
             StdRandom.shuffle(_items);
@@ -58,35 +53,42 @@ public class RandomizedQueue<Item> implements Iterable<Item>
 
     private void enlarge()
     {
+        // If we've reached capacity in the current array, enlarge it to 2X.
         if (_items.length == _count)
         {
-            resize(_items.length * 2);
+            _items = resize(_items, _count, _items.length * 2);
         }
     }
 
     private void shrink()
     {
+        // If we only have 25% capacity items in the array, shrink it by 50%.
         if (_count > 0 && _items.length / 4 == _count)
         {
-            resize(_items.length / 2);
+            _items = resize(_items, _count, _items.length / 2);
         }
     }
 
-    private void resize(int capacity)
+    private Item[] resize(Item[] arr, int currentSize, int newSize)
     {
-        if (capacity < _count)
+        if (newSize < currentSize)
         {
             throw new IllegalArgumentException();
         }
 
         // Copy the array into the new sized array.
-        Item[] temp = (Item[])new Object[capacity];
+        Item[] arr2 = (Item[])new Object[newSize];
         for (int i = 0; i < _count; i++)
         {
-            temp[i] = _items[i];
+            arr2[i] = _items[i];
         }
 
-        _items = temp;
+        return arr2;
+    }
+
+    private Item[] resize(Item[] arr, int currentSize)
+    {
+        return resize(arr, currentSize, currentSize);
     }
     // #endregion
 
