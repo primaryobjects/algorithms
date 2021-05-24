@@ -31,10 +31,10 @@ public class BruteCollinearPoints {
         Arrays.sort(pointsSorted);
 
         // Check for duplicates.
-        for (int i = 0; i < points.length - 1; i++)
+        for (int i = 0; i < pointsSorted.length - 1; i++)
         {
-            Point p1 = points[i];
-            Point p2 = points[i+1];
+            Point p1 = pointsSorted[i];
+            Point p2 = pointsSorted[i+1];
 
             if (p1.compareTo(p2) == 0)
             {
