@@ -135,7 +135,8 @@
             "classPaths": [
                 "lib/algs4.jar",
                 "31collinear"
-            ]
+            ],
+            "args": ["input6.txt"]
         }
     ]
 }

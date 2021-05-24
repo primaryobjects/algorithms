@@ -24,9 +24,13 @@ public class BruteCollinearPoints {
             }
         }
 
-        // Check for duplicate points, by first sorting so they're together.
-        Point[] pointsSorted = Arrays.copyOf(points, points.length);
+        // Make a copy of the points.
+        Point[] pointsSorted = points.clone();
+
+        // Sort points to place duplicates together.
         Arrays.sort(pointsSorted);
+
+        // Check for duplicates.
         for (int i = 0; i < points.length - 1; i++)
         {
             Point p1 = points[i];
@@ -52,11 +56,12 @@ public class BruteCollinearPoints {
                     for (int l = k + 1; l < pointsSorted.length; l++)
                     {
                         Point p4 = pointsSorted[l];
-                        if (p1.slopeTo(p2) == p1.slopeTo(p4) && p1.slopeTo(p2) == p1.slopeTo(p3))
+
+                        if (collinear(p1, p2, p3, p4))
                         {
                             // We have a line segment.
                             LineSegment segment = new LineSegment(p1, p4);
-                            if (segmentsList.contains(segment))
+                            if (!segmentsList.contains(segment))
                             {
                                 segmentsList.add(segment);
                             }
@@ -67,6 +72,22 @@ public class BruteCollinearPoints {
         }
 
         segments = segmentsList.toArray(new LineSegment[segmentsList.size()]);
+    }
+
+    private boolean collinear(Point p1, Point p2, Point p3, Point p4)
+    {
+        boolean result = false;
+
+        double slope1 = p1.slopeTo(p2);
+        double slope2 = p1.slopeTo(p3);
+        double slope3 = p1.slopeTo(p4);
+
+        if (Double.compare(slope1, slope2) == 0 && Double.compare(slope1, slope3) == 0)
+        {
+            result = true;
+        }
+
+        return result;
     }
 
     public int numberOfSegments()
@@ -86,7 +107,7 @@ public class BruteCollinearPoints {
         {
             throw new IllegalArgumentException("Missing filename.");
         }
-        
+
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
