@@ -114,6 +114,28 @@
                 "21queue"
             ],
             "args": [3]
+        },
+        {
+            "type": "java",
+            "name": "Launch Point",
+            "request": "launch",
+            "mainClass": "Point",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "31collinear"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Launch BruteCollinearPoints",
+            "request": "launch",
+            "mainClass": "BruteCollinearPoints",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "31collinear"
+            ]
         }
     ]
 }
