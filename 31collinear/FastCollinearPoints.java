@@ -54,7 +54,7 @@ public class FastCollinearPoints {
                 // Sort the comparison points with respect to the current point.
                 Arrays.sort(secondaryPoints, point.slopeOrder());
 
-                findSegments(secondaryPoints, point, segmentsList);
+                segmentsList.addAll(getSegments(secondaryPoints, point));
             }
         }
 
@@ -62,6 +62,7 @@ public class FastCollinearPoints {
     }
 
     //#region Private Methods
+
     private boolean collinear(Point p1, Point p2, Point p3)
     {
         double slope1 = p1.slopeTo(p2);
@@ -70,46 +71,53 @@ public class FastCollinearPoints {
         return Double.compare(slope1, slope2) == 0;
     }
 
-    private void findSegments(Point[] points, Point point, ArrayList<LineSegment> res) {
+    private ArrayList<LineSegment> getSegments(Point[] points, Point point) {
+        ArrayList<LineSegment> segments = new ArrayList<>();
+
         // start from position 1, since position 0 will be the point p itself
-        int start = 1;
+        int index = 1;
 
         for (int i = 2; i < points.length; i++) {
-            if (!collinear(point, points[start], points[i])) {
+            if (!collinear(point, points[index], points[i])) {
                 // check to see whether there have already 3 equal points
-                if (i - start >= 3) {
-                    Point[] ls = getSegment(points, point, start, i);
-                    /**
-                     * Important Point: only add line segment which starts form point p to avoid
-                     * duplicate
-                     */
-                    if (ls[0].compareTo(point) == 0) {
-                        res.add(new LineSegment(ls[0], ls[1]));
+                if (i - index >= 3) {
+                    Point[] originPoint = getPoints(points, point, index, i);
+
+                    // Verify the line segment starts with the reference point.
+                    if (originPoint[0].compareTo(point) == 0) {
+                        segments.add(new LineSegment(originPoint[0], originPoint[1]));
                     }
                 }
+                
                 // update
-                start = i;
+                index = i;
             }
         }
 
         // situation when the last several points in the array are collinear
-        if (points.length - start >= 3) {
-            Point[] lastPoints = getSegment(points, point, start, points.length);
+        if (points.length - index >= 3) {
+            Point[] lastPoints = getPoints(points, point, index, points.length);
             if (lastPoints[0].compareTo(point) == 0) {
-                res.add(new LineSegment(lastPoints[0], lastPoints[1]));
+                segments.add(new LineSegment(lastPoints[0], lastPoints[1]));
             }
         }
+
+        return segments;
     }
     
-    private Point[] getSegment(Point[] points, Point p, int start, int end) {
+    private Point[] getPoints(Point[] points, Point point, int start, int end) {
         ArrayList<Point> temp = new ArrayList<>();
-        temp.add(p);
+        temp.add(point);
+        
         for (int i = start; i < end; i++) {
             temp.add(points[i]);
         }
+        
         temp.sort(null);
+
         return new Point[] { temp.get(0), temp.get(temp.size() - 1) };
     }
+    
     //#endregion
     
     public int numberOfSegments()
