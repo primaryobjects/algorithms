@@ -42,70 +42,60 @@ public class FastCollinearPoints {
             }
         }
 
-        // Create a secondary array of points for comparison.
-        Point[] secondaryPoints = pointsSorted.clone();
-
-        // Find all 4-point line segments.
         ArrayList<LineSegment> segmentsList = new ArrayList<LineSegment>();
-        for (Point point : pointsSorted)
+        if (points.length > 3)
         {
-            // Sort the comparison points with respect to the current point.
-            Arrays.sort(secondaryPoints, point.slopeOrder());
+            // Create a secondary array of points for comparison.
+            Point[] secondaryPoints = pointsSorted.clone();
 
-            findSegments(secondaryPoints, point, segmentsList);
+            // Find all 4-point line segments.
+            for (Point point : pointsSorted)
+            {
+                // Sort the comparison points with respect to the current point.
+                Arrays.sort(secondaryPoints, point.slopeOrder());
+
+                findSegments(secondaryPoints, point, segmentsList);
+            }
         }
 
         segments = segmentsList.toArray(new LineSegment[segmentsList.size()]);
     }
 
-    /*private boolean collinear(Point p1, Point p2, Point p3)
+    //#region Private Methods
+    private boolean collinear(Point p1, Point p2, Point p3)
     {
         double slope1 = p1.slopeTo(p2);
         double slope2 = p1.slopeTo(p3);
 
         return Double.compare(slope1, slope2) == 0;
-    }*/
-
-    private boolean collinearSlope(double slope1, double slope2) {
-        if (Double.compare(slope2, slope1) == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
-    private void findSegments(Point[] points, Point p, ArrayList<LineSegment> res) {
+    private void findSegments(Point[] points, Point point, ArrayList<LineSegment> res) {
         // start from position 1, since position 0 will be the point p itself
         int start = 1;
-        double slop = p.slopeTo(points[1]);
 
         for (int i = 2; i < points.length; i++) {
-            double tempSlop = p.slopeTo(points[i]);
-            if (!collinearSlope(tempSlop, slop)) {
+            if (!collinear(point, points[start], points[i])) {
                 // check to see whether there have already 3 equal points
                 if (i - start >= 3) {
-                    Point[] ls = getSegment(points, p, start, i);
+                    Point[] ls = getSegment(points, point, start, i);
                     /**
                      * Important Point: only add line segment which starts form point p to avoid
                      * duplicate
                      */
-                    if (ls[0].compareTo(p) == 0) {
+                    if (ls[0].compareTo(point) == 0) {
                         res.add(new LineSegment(ls[0], ls[1]));
                     }
                 }
                 // update
                 start = i;
-                slop = tempSlop;
             }
         }
 
         // situation when the last several points in the array are collinear
         if (points.length - start >= 3) {
-            Point[] lastPoints = getSegment(points, p, start, points.length);
-            if (lastPoints[0].compareTo(p) == 0) {
+            Point[] lastPoints = getSegment(points, point, start, points.length);
+            if (lastPoints[0].compareTo(point) == 0) {
                 res.add(new LineSegment(lastPoints[0], lastPoints[1]));
             }
         }
@@ -120,7 +110,8 @@ public class FastCollinearPoints {
         temp.sort(null);
         return new Point[] { temp.get(0), temp.get(temp.size() - 1) };
     }
-
+    //#endregion
+    
     public int numberOfSegments()
     {
         // The number of line segments
