@@ -42,52 +42,83 @@ public class FastCollinearPoints {
             }
         }
 
+        // Create a secondary array of points for comparison.
+        Point[] secondaryPoints = pointsSorted.clone();
+
         // Find all 4-point line segments.
         ArrayList<LineSegment> segmentsList = new ArrayList<LineSegment>();
-        for (int i = 0; i < pointsSorted.length - 3; i++)
+        for (Point point : pointsSorted)
         {
-            Point p1 = pointsSorted[i];
-            for (int j = i + 1; j < pointsSorted.length - 2; j++)
-            {
-                Point p2 = pointsSorted[j];
-                for (int k = j + 1; k < pointsSorted.length - 1; k++)
-                {
-                    Point p3 = pointsSorted[k];
-                    for (int l = k + 1; l < pointsSorted.length; l++)
-                    {
-                        Point p4 = pointsSorted[l];
+            // Sort the comparison points with respect to the current point.
+            Arrays.sort(secondaryPoints, point.slopeOrder());
 
-                        if (collinear(p1, p2, p3, p4))
-                        {
-                            // We have a line segment.
-                            LineSegment segment = new LineSegment(p1, p4);
-                            if (!segmentsList.contains(segment))
-                            {
-                                segmentsList.add(segment);
-                            }
-                        }
-                    }
-                }
-            }
+            findSegments(secondaryPoints, point, segmentsList);
         }
 
         segments = segmentsList.toArray(new LineSegment[segmentsList.size()]);
     }
 
-    private boolean collinear(Point p1, Point p2, Point p3, Point p4)
+    /*private boolean collinear(Point p1, Point p2, Point p3)
     {
-        boolean result = false;
-
         double slope1 = p1.slopeTo(p2);
         double slope2 = p1.slopeTo(p3);
-        double slope3 = p1.slopeTo(p4);
 
-        if (Double.compare(slope1, slope2) == 0 && Double.compare(slope1, slope3) == 0)
+        return Double.compare(slope1, slope2) == 0;
+    }*/
+
+    private boolean collinearSlope(double slope1, double slope2) {
+        if (Double.compare(slope2, slope1) == 0)
         {
-            result = true;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void findSegments(Point[] points, Point p, ArrayList<LineSegment> res) {
+        // start from position 1, since position 0 will be the point p itself
+        int start = 1;
+        double slop = p.slopeTo(points[1]);
+
+        for (int i = 2; i < points.length; i++) {
+            double tempSlop = p.slopeTo(points[i]);
+            if (!collinearSlope(tempSlop, slop)) {
+                // check to see whether there have already 3 equal points
+                if (i - start >= 3) {
+                    Point[] ls = getSegment(points, p, start, i);
+                    /**
+                     * Important Point: only add line segment which starts form point p to avoid
+                     * duplicate
+                     */
+                    if (ls[0].compareTo(p) == 0) {
+                        res.add(new LineSegment(ls[0], ls[1]));
+                    }
+                }
+                // update
+                start = i;
+                slop = tempSlop;
+            }
         }
 
-        return result;
+        // situation when the last several points in the array are collinear
+        if (points.length - start >= 3) {
+            Point[] lastPoints = getSegment(points, p, start, points.length);
+            if (lastPoints[0].compareTo(p) == 0) {
+                res.add(new LineSegment(lastPoints[0], lastPoints[1]));
+            }
+        }
+    }
+    
+    private Point[] getSegment(Point[] points, Point p, int start, int end) {
+        ArrayList<Point> temp = new ArrayList<>();
+        temp.add(p);
+        for (int i = start; i < end; i++) {
+            temp.add(points[i]);
+        }
+        temp.sort(null);
+        return new Point[] { temp.get(0), temp.get(temp.size() - 1) };
     }
 
     public int numberOfSegments()

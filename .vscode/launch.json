@@ -128,9 +128,9 @@
         },
         {
             "type": "java",
-            "name": "Launch BruteCollinearPoints",
+            "name": "Launch FastCollinearPoints",
             "request": "launch",
-            "mainClass": "BruteCollinearPoints",
+            "mainClass": "FastCollinearPoints",
             "preLaunchTask": "compile java",
             "classPaths": [
                 "lib/algs4.jar",
