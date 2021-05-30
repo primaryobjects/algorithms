@@ -137,6 +137,28 @@
                 "31collinear"
             ],
             "args": ["input6.txt"]
+        },
+        {
+            "type": "java",
+            "name": "Launch Board",
+            "request": "launch",
+            "mainClass": "Board",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "8puzzle"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Launch Solver",
+            "request": "launch",
+            "mainClass": "Solver",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "lib/algs4.jar",
+                "8puzzle"
+            ]
         }
     ]
 }
