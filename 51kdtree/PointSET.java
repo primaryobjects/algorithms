@@ -51,7 +51,12 @@ public class PointSET {
 	public Iterable<Point2D> range(RectHV rect)
     {
 		List<Point2D> bounded = new LinkedList<Point2D>();
-		
+
+		if (rect == null)
+		{
+			throw new IllegalArgumentException();
+		}
+
 		for (Point2D point : points)
         {			
 			if (rect.contains(point))
@@ -67,7 +72,12 @@ public class PointSET {
 	public Point2D nearest(Point2D p)
     {
 		Point2D champion = null;
-		
+
+		if (p == null)
+		{
+			throw new IllegalArgumentException();
+		}
+
 		for (Point2D point : points)
         {			
 			if(champion == null)
