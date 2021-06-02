@@ -19,7 +19,7 @@
             "preLaunchTask": "compile java",
             "cwd": "${workspaceFolder}",
             "classPaths": [
-                "11hello",
+                "${workspaceFolder}/11hello",
             ],
             "args": ["Kevin", "Bob"],
         },
@@ -31,7 +31,7 @@
             "preLaunchTask": "compile java",
             "cwd": "${workspaceFolder}",
             "classPaths": [
-                "11hello",
+                "${workspaceFolder}/11hello",
             ],
             "args": ["Kevin", "Bob"],
         },
@@ -42,8 +42,8 @@
             "mainClass": "RandomWord",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "11hello"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/11hello"
             ],
             "args": ["<", "./11hello/animals.txt"]
         },
@@ -54,8 +54,8 @@
             "mainClass": "PercolationDPS",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "12percolation"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/12percolation"
             ]
         },
         {
@@ -65,8 +65,8 @@
             "mainClass": "Percolation",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "12percolation"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/12percolation"
             ]
         },
         {
@@ -76,8 +76,8 @@
             "mainClass": "PercolationStats",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "12percolation"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/12percolation"
             ],
             "args": ["10", "10"]
         },
@@ -88,8 +88,8 @@
             "mainClass": "Deque",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "21queue"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/21queue"
             ]
         },
         {
@@ -99,8 +99,8 @@
             "mainClass": "RandomizedQueue",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "21queue"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/21queue"
             ]
         },
         {
@@ -110,8 +110,8 @@
             "mainClass": "Permutation",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "21queue"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/21queue"
             ],
             "args": [3]
         },
@@ -122,8 +122,8 @@
             "mainClass": "Point",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "31collinear"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/31collinear"
             ]
         },
         {
@@ -133,8 +133,8 @@
             "mainClass": "FastCollinearPoints",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "31collinear"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/31collinear"
             ],
             "args": ["input6.txt"]
         },
@@ -145,8 +145,8 @@
             "mainClass": "Board",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "8puzzle"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/8puzzle"
             ]
         },
         {
@@ -156,8 +156,8 @@
             "mainClass": "Solver",
             "preLaunchTask": "compile java",
             "classPaths": [
-                "lib/algs4.jar",
-                "8puzzle"
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/8puzzle"
             ]
         }
     ]
