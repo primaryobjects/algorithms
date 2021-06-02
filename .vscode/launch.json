@@ -159,6 +159,17 @@
                 "${workspaceFolder}/lib/algs4.jar",
                 "${workspaceFolder}/8puzzle"
             ]
+        },
+        {
+            "type": "java",
+            "name": "Launch KdTree",
+            "request": "launch",
+            "mainClass": "KdTree",
+            "preLaunchTask": "compile java",
+            "classPaths": [
+                "${workspaceFolder}/lib/algs4.jar",
+                "${workspaceFolder}/51kdtree"
+            ]
         }
     ]
 }
